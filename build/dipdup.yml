@@ -8,8 +8,13 @@ metadata:
         - https://ipfs.infura.io
         - https://dweb.link
         - https://ipfs.io
-      timeout: ${IPFS_TIMEOUT:-3}
-      fallback: ${IPFS_NODE_URI}
+        - https://ipfs.teia.rocks
+        - https://gateway.ipfs.io
+        - https://infura-ipfs.io
+        - https://cloudflare-ipfs.com
+        - https://cf-ipfs.com
+      timeout: ${IPFS_TIMEOUT:-5}
+      fallback: https://ipfs.teia.rocks
       pinning:
       delay: 10
     http_timeout: 5
@@ -27,12 +32,10 @@ metadata:
     mainnet:
       datasources:
         tzkt: https://api.tzkt.io
-    jakartanet:
-      datasources:
-        tzkt: https://api.jakartanet.tzkt.io
-    ghostnet:
-      datasources:
-        tzkt: https://api.ghostnet.tzkt.io
+      filters:
+        accounts:
+          - HEN_objkts
+          - HEN_subjkts
 
 database:
   kind: postgres
@@ -52,3 +55,44 @@ hasura:
 
 prometheus:
   url: ${EXPORT_HOST:-0.0.0.0}:2112
+
+contracts:
+  HEN_objkts:
+    address: KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton
+    typename: hen_objkts
+  HEN_swap_v1:
+    address: KT1Hkg5qeNhfwpKW4fXvq7HGZB9z2EnmCCA9
+    typename: hen_minter
+  HEN_swap_v2:
+    address: KT1HbQepzV1nVGg8QVznG7z4RcHseD5kwqBn
+    typename: hen_swap_v2
+  HENC_swap:
+    address: KT1PHubm9HtyQEJ4BBpMTVomq6mhbfNZ9z5w
+    typename: henc_swap
+  HEN_subjkts:
+    address: KT1My1wDZHDGweCrJnQJi3wcFaS67iksirvj
+    typename: hen_subjkt
+  HDAO_curation:
+    address: KT1TybhR7XraG75JFYKSrh7KnxukMBT5dor6
+    typename: hdao_curation
+  HDAO_ledger:
+    address: KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW
+    typename: hdao_ledger
+  SPLIT_contract_sample_a:
+    address: KT1K8A2cqqpQTEHYpY9R7aAybCdcM3tNpXyu
+    typename: split_contract_a
+  SPLIT_contract_sample_b:
+    address: KT1Nr12oNBxMXqrgWPaN7tedue8Q6GzzbiNg
+    typename: split_contract_a
+  SPLIT_contract_sample_c:
+    address: KT1Uaq7E1zcTg2BCDXWXBmuGoVFeLZkCkv3s
+    typename: split_contract_a
+  SPLIT_contract_sample_d:
+    address: KT1XNKmW2786FRK9rGr544JYcmLvcvwn3qEV
+    typename: split_contract_a
+  SPLIT_contract_sample_e:
+    address: KT1NcoBQJ5PbGNWCcchhKeYdopvmvugZdeCg
+    typename: split_contract_b
+  SPLIT_sign:
+    address: KT1BcLnWRziLDNJNRn3phAANKrEBiXhytsMY
+    typename: split_sign

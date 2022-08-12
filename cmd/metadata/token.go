@@ -15,6 +15,7 @@ import (
 	"github.com/dipdup-net/go-lib/tzkt/api"
 	"github.com/dipdup-net/metadata/cmd/metadata/helpers"
 	"github.com/dipdup-net/metadata/cmd/metadata/models"
+	"github.com/dipdup-net/metadata/cmd/metadata/prometheus"
 	"github.com/dipdup-net/metadata/cmd/metadata/resolver"
 )
 
@@ -104,10 +105,10 @@ func (indexer *Indexer) processTokenMetadata(update api.BigMapUpdate) (*models.T
 
 	if _, err := url.ParseRequestURI(tokenInfo.Link); err != nil {
 		token.Status = models.StatusApplied
-		indexer.incrementCounter("token", token.Status)
+		indexer.prom.IncrementMetadataCounter(indexer.network, prometheus.MetadataTypeToken, token.Status.String())
 	} else {
 		token.Link = tokenInfo.Link
-		indexer.incrementNewMetadataGauge("token")
+		indexer.prom.IncrementMetadataNew(indexer.network, prometheus.MetadataTypeToken)
 	}
 
 	return &token, nil
@@ -133,7 +134,7 @@ func (indexer *Indexer) resolveTokenMetadata(ctx context.Context, tm *models.Tok
 	if err != nil {
 		tm.Error = err.Error()
 		if e, ok := err.(resolver.ResolvingError); ok {
-			indexer.incrementErrorCounter(e)
+			indexer.prom.IncrementErrorCounter(indexer.network, e)
 			err = e.Err
 
 			if e.Type == resolver.ErrorInvalidHTTPURI || e.Type == resolver.ErrorTypeInvalidJSON {
@@ -172,7 +173,7 @@ func (indexer *Indexer) resolveTokenMetadata(ctx context.Context, tm *models.Tok
 			Data: resolved.Data,
 		}
 		if resolved.ResponseTime > 0 {
-			indexer.addHistogramResponseTime(resolved)
+			indexer.prom.AddHistogramResponseTime(indexer.network, resolved)
 		}
 		return indexer.db.IPFS.Save(link)
 	}
@@ -263,7 +264,7 @@ var legacyTokens = []*models.TokenMetadata{
 		Network:        "mainnet",
 		Contract:       "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo",
 		TokenID:        decimal.NewFromInt(0),
-		Metadata:       models.JSONB(`{"name":"LB Token","symbol":"LBT","decimals":"0"}`),
+		Metadata:       models.JSONB(`{"name":"Sirius","symbol":"SIRS","decimals":"0"}`),
 		Status:         models.StatusApplied,
 		RetryCount:     1,
 		ImageProcessed: true,
